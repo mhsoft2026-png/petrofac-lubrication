@@ -23,22 +23,17 @@ jobs:
     - name: Build
       run: npm run build
     
-    - name: Setup Capacitor
-      run: |
-        npm install @capacitor/cli @capacitor/core @capacitor/android
-        npx cap init "Petrofac Lubrication" com.petrofac.lubrication --web-dir=dist
-    
     - name: Setup Java
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
     
-    - name: Add Android
-      run: npx cap add android
+    - name: Setup Capacitor
+      run: npm install @capacitor/cli @capacitor/core @capacitor/android
     
-    - name: Sync
-      run: npx cap sync
+    - name: Copy assets to android
+      run: npx cap copy android
     
     - name: Build APK
       run: |
