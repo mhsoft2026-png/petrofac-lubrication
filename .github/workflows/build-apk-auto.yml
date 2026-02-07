@@ -1,4 +1,4 @@
-name: Build APK on Push
+name: Build Android APK
 
 on:
   push:
@@ -10,54 +10,48 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Node
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         
-    - name: Setup Java
+    - name: Setup Java JDK
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
         
     - name: Install dependencies
-      run: npm install
+      run: |
+        npm install
+        npm install -D @capacitor/cli @capacitor/core @capacitor/android
       
-    - name: Build web app
+    - name: Build Vite app
       run: npm run build
       
-    - name: Install Capacitor CLI
-      run: npm install -g @capacitor/cli
+    - name: Verify dist folder
+      run: ls -la dist/
       
     - name: Sync Capacitor
       run: npx cap sync android
       
-    - name: Build APK (Debug)
+    - name: Grant execute permission for gradlew
+      run: chmod +x android/gradlew
+      
+    - name: Build Debug APK
       run: |
         cd android
-        chmod +x ./gradlew
-        ./gradlew assembleDebug
+        ./gradlew assembleDebug --stacktrace
         
-    - name: Rename APK
-      run: |
-        cd android/app/build/outputs/apk/debug
-        mv app-debug.apk petrofac-lubrication.apk
+    - name: Verify APK exists
+      run: ls -la android/app/build/outputs/apk/debug/
         
-    - name: Upload APK
+    - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: petrofac-lubrication-apk
-        path: android/app/build/outputs/apk/debug/petrofac-lubrication.apk
+        name: Petrofac-Lubrication-APK
+        path: android/app/build/outputs/apk/debug/app-debug.apk
         retention-days: 30
-        
-    - name: Create Release
-      if: startsWith(github.ref, 'refs/tags/v')
-      uses: softprops/action-gh-release@v1
-      with:
-        files: android/app/build/outputs/apk/release/petrofac-lubrication.apk
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
