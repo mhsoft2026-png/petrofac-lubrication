@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Petrofac Lubrication</string>
+    <string name="title_activity_main">Petrofac Lubrication</string>
+    <string name="package_name">com.petrofac.lubrication</string>
+    <string name="custom_url_scheme">com.petrofac.lubrication</string>
+</resources>

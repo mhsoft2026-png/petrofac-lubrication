@@ -1,0 +1,60 @@
+name: Build APK on Push
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build web app
+      run: npm run build
+      
+    - name: Sync Capacitor
+      run: npx cap sync android
+      
+    - name: Build APK
+      run: |
+        cd android
+        chmod +x ./gradlew
+        ./gradlew assembleRelease
+        
+    - name: Sign APK
+      run: |
+        cd android/app/build/outputs/apk/release
+        mv app-release-unsigned.apk petrofac-lubrication.apk
+        
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: petrofac-lubrication-apk
+        path: android/app/build/outputs/apk/release/petrofac-lubrication.apk
+        retention-days: 30
+        
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: android/app/build/outputs/apk/release/petrofac-lubrication.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

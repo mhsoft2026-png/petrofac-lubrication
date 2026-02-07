@@ -1,0 +1,7 @@
+{
+  "name": "Petrofac Lubrication Scheduler",
+  "description": "A professional mobile-first application for managing and tracking lubrication schedules for the Ain Tsila Development project, featuring equipment lookup, lubricant specifications, and AI-powered maintenance assistance.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
