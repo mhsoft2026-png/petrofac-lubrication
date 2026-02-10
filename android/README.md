@@ -2,6 +2,16 @@
 
 This is the Android project folder for Petrofac Lubrication application.
 
+## ⚙️ Configuration Changes (تم تعديل الإعدادات)
+
+### تقليل تحذيرات Google Play Protect:
+- **targetSdkVersion**: خُفّض من 36 إلى 30
+- **compileSdkVersion**: خُفّض من 36 إلى 34
+- **usesCleartextTraffic**: مُفعّل للسماح بـ HTTP
+- **requestLegacyExternalStorage**: مُفعّل للتوافق مع الإصدارات القديمة
+
+هذه التعديلات تقلل من تحذيرات Google Play Protect عند تثبيت التطبيق.
+
 ## Quick Start
 
 1. Open this folder in Android Studio
