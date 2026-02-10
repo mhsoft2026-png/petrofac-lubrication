@@ -7,31 +7,20 @@ import { askGemini } from './services/geminiService';
 // --- Components ---
 
 const Header: React.FC = () => (
-  <header className="bg-gradient-to-r from-blue-900 via-blue-800 to-slate-900 px-6 py-5 sticky top-0 z-50 shadow-2xl border-b-4 border-orange-500">
+  <header className="bg-white border-b-2 border-slate-200 px-6 py-4 sticky top-0 z-50 shadow-md backdrop-blur-lg bg-white/95">
     <div className="flex items-center justify-between max-w-7xl mx-auto">
-      <div className="flex items-center gap-4">
-        <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-500 blur-xl opacity-60 rounded-3xl group-hover:opacity-80 transition-opacity"></div>
-          <div className="relative bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 text-white p-4 rounded-3xl shadow-2xl transform group-hover:scale-105 transition-transform">
-            <i className="fas fa-oil-can text-2xl"></i>
-          </div>
+      <div className="flex items-center gap-3">
+        <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white p-3 rounded-xl shadow-lg">
+          <i className="fas fa-oil-can text-xl"></i>
         </div>
         <div>
-          <h1 className="text-xl font-black text-white leading-none tracking-tight bg-gradient-to-r from-white to-orange-200 bg-clip-text text-transparent">LUBRIFICATION ET LUBRIFIANTS</h1>
-          <p className="text-xs text-orange-300 uppercase tracking-[0.2em] font-extrabold mt-1 flex items-center gap-2">
-            <span className="w-1 h-1 bg-orange-400 rounded-full"></span>
-            ATL - Ain Tsila
-          </p>
+          <h1 className="text-lg font-bold text-slate-800 leading-tight">LUBRIFICATION ET LUBRIFIANTS</h1>
+          <p className="text-xs text-slate-500 font-medium mt-0.5">ATL - Ain Tsila</p>
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 bg-gradient-to-r from-emerald-500/20 to-green-500/20 px-4 py-2 rounded-full border-2 border-emerald-400/40 backdrop-blur-sm">
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-          </span>
-          <span className="text-xs font-black text-emerald-300 uppercase tracking-wider">Système Actif</span>
-        </div>
+      <div className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
+        <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+        <span className="text-xs font-semibold text-emerald-700">Actif</span>
       </div>
     </div>
   </header>
@@ -46,67 +35,63 @@ const SearchBar: React.FC<{
   const [showFilters, setShowFilters] = React.useState(false);
   
   return (
-    <div className="px-6 py-8 bg-gradient-to-br from-slate-50 via-white to-blue-50">
-      <div className="relative max-w-5xl mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-400/10 via-blue-400/10 to-purple-400/10 blur-3xl rounded-3xl"></div>
-        <div className="relative space-y-4">
-          <div className="flex gap-3">
-            <div className="flex-1 relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-blue-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-              <input 
-                type="text" 
-                placeholder="🔍 Rechercher: TAG, Description, Type, Marque, Grade..." 
-                className="relative w-full pl-14 pr-6 py-5 bg-white/90 backdrop-blur-xl rounded-2xl text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-orange-500/30 transition-all border-2 border-slate-200 focus:border-orange-500 shadow-xl font-semibold"
-                onChange={(e) => onSearch(e.target.value)}
-              />
-              <div className="absolute left-5 top-1/2 -translate-y-1/2 text-orange-500">
-                <i className="fas fa-search text-xl"></i>
-              </div>
+    <div className="px-6 py-6 bg-slate-50">
+      <div className="max-w-5xl mx-auto space-y-4">
+        <div className="flex gap-3">
+          <div className="flex-1 relative">
+            <input 
+              type="text" 
+              placeholder="🔍 Rechercher par TAG, Description, Type, Marque..." 
+              className="w-full pl-12 pr-4 py-3.5 bg-white rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all border border-slate-200 shadow-sm"
+              onChange={(e) => onSearch(e.target.value)}
+            />
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+              <i className="fas fa-search"></i>
             </div>
-            <button 
-              onClick={() => setShowFilters(!showFilters)}
-              className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all shadow-xl border-2 ${
-                showFilters 
-                  ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white border-orange-400 shadow-orange-500/50' 
-                  : 'bg-white text-slate-700 hover:bg-slate-50 border-slate-200'
-              }`}
-            >
-              <i className="fas fa-filter text-xl"></i>
-            </button>
           </div>
-          
-          {showFilters && (
-            <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-5 border-2 border-slate-200 shadow-2xl animate-in slide-in-from-top-2 duration-200">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-xs font-black text-slate-600 uppercase tracking-wider flex items-center gap-2">
-                  <i className="fas fa-layer-group text-orange-500"></i>
-                  Filtrer par Type de Lubrifiant
-                </p>
-                <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">{resultCount} résultats</span>
-              </div>
-              <div className="flex gap-3 flex-wrap">
-                {[
-                  { type: 'الكل', label: 'Tous', icon: 'fa-th-large', color: 'slate' },
-                  { type: 'OIL', label: 'Huiles', icon: 'fa-tint', color: 'blue' },
-                  { type: 'GREASE', label: 'Graisses', icon: 'fa-fill-drip', color: 'emerald' }
-                ].map(item => (
-                  <button
-                    key={item.type}
-                    onClick={() => onFilterChange(item.type)}
-                    className={`flex-1 px-5 py-3 rounded-xl text-sm font-black transition-all border-2 shadow-lg ${
-                      filterType === item.type
-                        ? `bg-gradient-to-r from-${item.color}-500 to-${item.color}-600 text-white border-${item.color}-400 shadow-${item.color}-500/50 scale-105`
-                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
-                    }`}
-                  >
-                    <i className={`fas ${item.icon} mr-2`}></i>
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+          <button 
+            onClick={() => setShowFilters(!showFilters)}
+            className={`px-4 py-3.5 rounded-xl flex items-center gap-2 transition-all border font-semibold text-sm ${
+              showFilters 
+                ? 'bg-blue-600 text-white border-blue-600 shadow-md' 
+                : 'bg-white text-slate-700 hover:bg-slate-50 border-slate-200 shadow-sm'
+            }`}
+          >
+            <i className="fas fa-filter"></i>
+            <span className="hidden sm:inline">Filtres</span>
+          </button>
         </div>
+        
+        {showFilters && (
+          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm animate-in slide-in-from-top-2 duration-200">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+                Type de Lubrifiant
+              </p>
+              <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">{resultCount} résultats</span>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {[
+                { type: 'الكل', label: 'Tous', icon: 'fa-th-large' },
+                { type: 'OIL', label: 'Huiles', icon: 'fa-tint' },
+                { type: 'GREASE', label: 'Graisses', icon: 'fa-fill-drip' }
+              ].map(item => (
+                <button
+                  key={item.type}
+                  onClick={() => onFilterChange(item.type)}
+                  className={`flex-1 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all border ${
+                    filterType === item.type
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  <i className={`fas ${item.icon} mr-1.5`}></i>
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -114,48 +99,32 @@ const SearchBar: React.FC<{
 
 const EquipmentCard: React.FC<{ equipment: EquipmentData; onClick: (eq: EquipmentData) => void }> = React.memo(({ equipment, onClick }) => (
   <div 
-    className="group bg-gradient-to-br from-white to-slate-50 rounded-2xl p-6 border-2 border-slate-200 hover:border-orange-500 hover:shadow-2xl hover:shadow-orange-500/20 active:scale-[0.98] transition-all duration-300 cursor-pointer relative overflow-hidden"
+    className="bg-white rounded-xl p-5 border border-slate-200 hover:border-blue-400 hover:shadow-lg active:scale-[0.99] transition-all cursor-pointer"
     onClick={() => onClick(equipment)}
   >
-    <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-orange-200 via-orange-100 to-transparent rounded-full -mr-20 -mt-20 opacity-30 group-hover:opacity-50 transition-opacity"></div>
-    <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-blue-200 via-blue-100 to-transparent rounded-full -ml-16 -mb-16 opacity-20"></div>
-    
-    <div className="relative">
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full animate-pulse"></div>
-          <span className="text-[10px] font-black text-slate-600 bg-gradient-to-r from-slate-100 to-slate-50 px-3 py-1.5 rounded-xl uppercase tracking-wider border-2 border-slate-200">{equipment.package}</span>
-        </div>
-        <span className={`text-[10px] font-black px-4 py-2 rounded-xl uppercase border-2 shadow-lg ${
-          equipment.type === LubricantType.OIL 
-            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-400 shadow-blue-500/30' 
-            : 'bg-gradient-to-r from-emerald-500 to-green-600 text-white border-emerald-400 shadow-emerald-500/30'
-        }`}>
-          <i className={`fas ${equipment.type === LubricantType.OIL ? 'fa-tint' : 'fa-fill-drip'} mr-1.5`}></i>
-          {equipment.type}
-        </span>
-      </div>
-      
-      <div className="mb-4">
-        <h3 className="text-2xl font-black text-slate-900 mb-2 group-hover:text-orange-600 transition-colors bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text">{equipment.tagNo}</h3>
-        <p className="text-sm text-slate-600 line-clamp-2 leading-relaxed font-semibold">{equipment.description}</p>
-      </div>
-      
-      <div className="flex items-center gap-6 text-xs font-bold border-t-2 border-slate-200 pt-4 mt-4">
-        <div className="flex items-center gap-2 bg-orange-50 px-3 py-2 rounded-xl border border-orange-200">
-          <i className="fas fa-flask text-orange-600"></i>
-          <span className="text-slate-800">{equipment.grade}</span>
-        </div>
-        <div className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-xl border border-blue-200">
-          <i className="fas fa-clock text-blue-600"></i>
-          <span className="text-slate-800">{equipment.replacementInterval || 'On Analysis'}</span>
-        </div>
-      </div>
+    <div className="flex justify-between items-start mb-3">
+      <span className="text-xs font-medium text-slate-500 bg-slate-50 px-2.5 py-1 rounded-lg">{equipment.package}</span>
+      <span className={`text-xs font-semibold px-3 py-1 rounded-lg ${
+        equipment.type === LubricantType.OIL 
+          ? 'bg-blue-100 text-blue-700' 
+          : 'bg-emerald-100 text-emerald-700'
+      }`}>
+        <i className={`fas ${equipment.type === LubricantType.OIL ? 'fa-tint' : 'fa-fill-drip'} mr-1`}></i>
+        {equipment.type}
+      </span>
     </div>
     
-    <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-1">
-      <div className="bg-orange-500 text-white p-3 rounded-xl shadow-lg">
-        <i className="fas fa-arrow-right text-lg"></i>
+    <h3 className="text-xl font-bold text-slate-800 mb-2">{equipment.tagNo}</h3>
+    <p className="text-sm text-slate-600 line-clamp-2 mb-4">{equipment.description}</p>
+    
+    <div className="flex items-center gap-3 text-xs">
+      <div className="flex items-center gap-1.5 text-slate-600">
+        <i className="fas fa-flask text-blue-500"></i>
+        <span className="font-medium">{equipment.grade}</span>
+      </div>
+      <div className="flex items-center gap-1.5 text-slate-600">
+        <i className="fas fa-clock text-emerald-500"></i>
+        <span className="font-medium">{equipment.replacementInterval || 'Sur Analyse'}</span>
       </div>
     </div>
   </div>
@@ -178,152 +147,141 @@ const DetailView: React.FC<{ equipment: EquipmentData; onClose: () => void }> = 
   };
   
   return (
-    <div className="fixed inset-0 bg-white z-[60] overflow-y-auto pb-20 animate-in slide-in-from-bottom duration-300">
-      <div className="sticky top-0 bg-gradient-to-r from-blue-900 to-slate-900 backdrop-blur-md p-4 border-b-2 border-orange-500 flex items-center gap-4 z-10 shadow-xl">
-        <button onClick={onClose} className="p-2.5 -ml-2 text-white hover:text-orange-400 bg-white/10 rounded-xl hover:bg-white/20 transition-all">
-          <i className="fas fa-arrow-left text-lg"></i>
+    <div className="fixed inset-0 bg-slate-50 z-[60] overflow-y-auto pb-20 animate-in slide-in-from-right duration-200">
+      <div className="sticky top-0 bg-white border-b border-slate-200 p-4 flex items-center gap-3 z-10 shadow-sm">
+        <button onClick={onClose} className="p-2 -ml-1 text-slate-600 hover:text-blue-600 hover:bg-slate-100 rounded-lg transition-all">
+          <i className="fas fa-arrow-left"></i>
         </button>
         <div className="flex-1">
-          <h2 className="font-black text-white truncate leading-tight text-lg">{equipment.tagNo}</h2>
-          <p className="text-xs text-orange-300 font-bold uppercase tracking-wide">{equipment.package}</p>
+          <h2 className="font-bold text-slate-800 truncate">{equipment.tagNo}</h2>
+          <p className="text-xs text-slate-500">{equipment.package}</p>
         </div>
-        <div className={`px-3 py-1.5 rounded-lg font-bold text-xs ${
+        <div className={`px-3 py-1 rounded-lg font-medium text-xs ${
           equipment.type === LubricantType.OIL 
-            ? 'bg-blue-500 text-white' 
-            : 'bg-emerald-500 text-white'
+            ? 'bg-blue-100 text-blue-700' 
+            : 'bg-emerald-100 text-emerald-700'
         }`}>
           {equipment.type}
         </div>
       </div>
 
-      <div className="p-5 space-y-6 max-w-2xl mx-auto">
+      <div className="p-4 space-y-4 max-w-2xl mx-auto">
         {/* Technical Data Section */}
-        <section className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-2xl border-2 border-slate-200 shadow-lg">
-          <h4 className="text-xs uppercase font-black text-orange-600 mb-4 tracking-widest flex items-center gap-2">
-            <i className="fas fa-info-circle"></i>
-            Données Techniques Principales
+        <section className="bg-white p-4 rounded-xl border border-slate-200">
+          <h4 className="text-xs font-semibold text-slate-600 mb-3 flex items-center gap-2">
+            <i className="fas fa-info-circle text-blue-500"></i>
+            Données Techniques
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white p-4 rounded-xl border border-slate-200">
-              <p className="text-[10px] text-slate-500 mb-2 font-bold uppercase">Description</p>
-              <p className="text-sm font-bold text-slate-900">{equipment.description}</p>
+          <div className="space-y-3">
+            <div>
+              <p className="text-xs text-slate-500 mb-1">Description</p>
+              <p className="text-sm font-medium text-slate-800">{equipment.description}</p>
             </div>
-            <div className="bg-white p-4 rounded-xl border border-slate-200">
-              <p className="text-[10px] text-slate-500 mb-2 font-bold uppercase">Partie Spécifique</p>
-              <p className="text-sm font-bold text-slate-900">{equipment.part}</p>
+            <div>
+              <p className="text-xs text-slate-500 mb-1">Partie Spécifique</p>
+              <p className="text-sm font-medium text-slate-800">{equipment.part}</p>
             </div>
           </div>
         </section>
 
         {/* Lubrication Parameters */}
-        <section className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-2xl border-2 border-blue-200 shadow-lg">
-          <h4 className="text-xs uppercase font-black text-blue-700 mb-4 tracking-widest flex items-center gap-2">
-            <i className="fas fa-cogs"></i>
+        <section className="bg-white p-4 rounded-xl border border-slate-200">
+          <h4 className="text-xs font-semibold text-slate-600 mb-3 flex items-center gap-2">
+            <i className="fas fa-cogs text-blue-500"></i>
             Paramètres de Lubrification
           </h4>
-          <div className="space-y-2 bg-white border-2 border-slate-200 rounded-xl overflow-hidden shadow-md">
+          <div className="space-y-2">
             {[
-              { label: 'Type de Lubrifiant', val: equipment.type, icon: 'fa-tint' },
-              { label: 'Grade ISO/NLGI', val: equipment.grade, icon: 'fa-vial' },
-              { label: 'Volume Initial', val: equipment.initialFill, icon: 'fa-fill-drip' },
-              { label: 'Intervalle de Remplissage', val: equipment.topUpInterval, icon: 'fa-hourglass-half' },
-              { label: 'Durée de Vie', val: equipment.replacementInterval, icon: 'fa-redo' },
+              { label: 'Type', val: equipment.type },
+              { label: 'Grade ISO/NLGI', val: equipment.grade },
+              { label: 'Volume Initial', val: equipment.initialFill },
+              { label: 'Intervalle Remplissage', val: equipment.topUpInterval },
+              { label: 'Durée de Vie', val: equipment.replacementInterval },
             ].map((item, idx) => (
-              <div key={idx} className="flex justify-between items-center px-5 py-4 border-b last:border-0 border-slate-100 hover:bg-slate-50 transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
-                    <i className={`fas ${item.icon} text-white text-sm`}></i>
-                  </div>
-                  <span className="text-sm text-slate-700 font-bold">{item.label}</span>
-                </div>
-                <span className="text-sm font-black text-slate-900">{item.val}</span>
+              <div key={idx} className="flex justify-between items-center py-2 border-b last:border-0 border-slate-100">
+                <span className="text-xs text-slate-600">{item.label}</span>
+                <span className="text-sm font-medium text-slate-800">{item.val}</span>
               </div>
             ))}
           </div>
         </section>
 
         {/* Brands Section */}
-        <section className="bg-gradient-to-br from-purple-50 to-white p-6 rounded-2xl border-2 border-purple-200 shadow-lg">
-          <h4 className="text-xs uppercase font-black text-purple-700 mb-4 tracking-widest flex items-center gap-2">
-            <i className="fas fa-award"></i>
-            Produits Équivalents par Marque
+        <section className="bg-white p-4 rounded-xl border border-slate-200">
+          <h4 className="text-xs font-semibold text-slate-600 mb-3 flex items-center gap-2">
+            <i className="fas fa-award text-blue-500"></i>
+            Produits par Marque
           </h4>
-          <div className="grid grid-cols-1 gap-3">
+          <div className="space-y-2">
             {Object.entries(equipment.brands).map(([brand, value]) => value && (
-              <div key={brand} className="flex items-center gap-4 p-4 bg-white border-2 border-slate-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all">
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-xs font-black text-slate-700 uppercase border-2 border-slate-300 shadow-md">
-                  {brand.slice(0, 3)}
-                </div>
-                <div className="flex-1">
-                  <p className="text-[10px] text-slate-500 uppercase font-black tracking-wider">{brand}</p>
-                  <p className="text-sm font-bold text-slate-900 mt-1">{value}</p>
-                </div>
+              <div key={brand} className="flex items-center justify-between py-2 border-b last:border-0 border-slate-100">
+                <span className="text-xs font-medium text-slate-600">{brand}</span>
+                <span className="text-sm font-medium text-slate-800">{value}</span>
               </div>
             ))}
           </div>
         </section>
 
         {/* Notes Section */}
-        <section className="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl border-2 border-green-300 shadow-lg">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-xs uppercase font-black text-green-700 tracking-widest flex items-center gap-2">
-              <i className="fas fa-sticky-note"></i>
-              Notes et Observations
+        <section className="bg-white p-4 rounded-xl border border-slate-200">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-xs font-semibold text-slate-600 flex items-center gap-2">
+              <i className="fas fa-sticky-note text-blue-500"></i>
+              Notes
             </h4>
             {!isEditing && (
               <button 
                 onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-green-600 text-white rounded-xl text-xs font-bold hover:bg-green-700 transition-all shadow-md flex items-center gap-2"
+                className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-all flex items-center gap-1.5"
               >
                 <i className="fas fa-edit"></i>
-                {notes ? 'Modifier' : 'Ajouter Note'}
+                {notes ? 'Modifier' : 'Ajouter'}
               </button>
             )}
           </div>
           
           {isEditing ? (
-            <div className="space-y-3">
+            <div className="space-y-2">
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="✍️ Entrez vos observations, remarques ou notes techniques..."
-                className="w-full p-4 bg-white border-2 border-green-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 min-h-[150px] font-medium resize-none"
+                placeholder="Entrez vos observations..."
+                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[120px] resize-none"
               />
               <div className="flex gap-2">
                 <button 
                   onClick={saveNotes}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl text-sm font-black hover:from-green-700 hover:to-green-800 transition-all shadow-lg flex items-center justify-center gap-2"
+                  className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-all"
                 >
-                  <i className="fas fa-save"></i>
                   Enregistrer
                 </button>
                 <button 
                   onClick={() => setIsEditing(false)}
-                  className="px-4 py-3 bg-slate-200 text-slate-700 rounded-xl text-sm font-bold hover:bg-slate-300 transition-all"
+                  className="px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 transition-all"
                 >
                   Annuler
                 </button>
               </div>
             </div>
           ) : notes ? (
-            <div className="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-inner">
-              <p className="text-sm text-slate-700 whitespace-pre-wrap font-medium leading-relaxed">{notes}</p>
+            <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{notes}</p>
             </div>
           ) : (
-            <div className="text-center py-8 text-slate-400">
-              <i className="fas fa-sticky-note text-5xl mb-3 opacity-30"></i>
-              <p className="text-sm font-semibold">Aucune note ajoutée</p>
+            <div className="text-center py-6 text-slate-400">
+              <i className="fas fa-sticky-note text-3xl mb-2 opacity-30"></i>
+              <p className="text-xs">Aucune note</p>
             </div>
           )}
         </section>
 
         {/* Remarks Section */}
-        <section className="bg-gradient-to-br from-orange-500 to-red-600 p-6 rounded-2xl shadow-2xl text-white">
-          <h4 className="text-xs uppercase font-black text-orange-100 mb-3 flex items-center gap-2">
+        <section className="bg-amber-50 p-4 rounded-xl border border-amber-200">
+          <h4 className="text-xs font-semibold text-amber-700 mb-2 flex items-center gap-2">
             <i className="fas fa-exclamation-triangle"></i>
             Notes d'Ingénierie
           </h4>
-          <p className="text-sm leading-relaxed font-semibold">
+          <p className="text-sm text-amber-900 leading-relaxed">
             {equipment.remarks}
           </p>
         </section>
@@ -480,82 +438,52 @@ export default function App() {
     switch (currentView) {
       case 'dashboard':
         return (
-          <div className="p-6 space-y-6 bg-gradient-to-b from-slate-50 to-white min-h-screen">
-            <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden border-4 border-orange-500/30">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-orange-500/20 to-transparent rounded-full -mr-40 -mt-40"></div>
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-blue-500/20 to-transparent rounded-full -ml-32 -mb-32"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
-                <div className="absolute inset-0 opacity-5">
-                  <i className="fas fa-oil-can text-[20rem] text-white"></i>
+          <div className="p-6 space-y-6 bg-slate-50 min-h-screen">
+            <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-white shadow-lg">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <p className="text-xs font-medium text-blue-200 mb-1">Système de Lubrification</p>
+                  <h2 className="text-2xl font-bold mb-1">Base de Données ATL</h2>
+                  <p className="text-xs text-blue-200">Ain Tsila Production Facility</p>
+                </div>
+                <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+                  <i className="fas fa-database text-xl"></i>
                 </div>
               </div>
               
-              <div className="relative z-10">
-                <div className="flex justify-between items-start mb-8">
-                  <div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-1 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full"></div>
-                      <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-300">Système de Lubrification</p>
-                    </div>
-                    <h2 className="text-4xl font-black leading-tight bg-gradient-to-r from-white via-orange-100 to-white bg-clip-text text-transparent">BASE DE DONNÉES<br/>LUBRIFIANTS ATL</h2>
-                    <p className="text-sm text-blue-200 mt-2 font-bold">Ain Tsila Production Facility</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white/10 backdrop-blur p-4 rounded-xl border border-white/20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <i className="fas fa-cogs text-sm"></i>
+                    <p className="text-xs font-medium">Total</p>
                   </div>
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-600 blur-xl opacity-50"></div>
-                    <div className="relative w-20 h-20 bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 backdrop-blur-xl rounded-3xl flex items-center justify-center border-2 border-orange-400/50 shadow-2xl transform hover:scale-110 transition-transform">
-                      <i className="fas fa-database text-3xl"></i>
-                    </div>
-                  </div>
+                  <p className="text-3xl font-bold">{EQUIPMENT_DATABASE.length}</p>
+                  <p className="text-xs text-blue-200 mt-1">Équipements</p>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl p-6 rounded-2xl border-2 border-white/20 shadow-xl hover:border-orange-400/50 transition-all group">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center border border-orange-400/30">
-                        <i className="fas fa-cogs text-orange-400"></i>
-                      </div>
-                      <p className="text-xs text-white/80 font-black uppercase tracking-wide">Total Équipements</p>
-                    </div>
-                    <p className="text-5xl font-black bg-gradient-to-r from-white to-orange-200 bg-clip-text text-transparent">{EQUIPMENT_DATABASE.length}</p>
-                    <p className="text-xs text-blue-300 mt-2 font-bold">Machines actives</p>
+                <div className="bg-white/10 backdrop-blur p-4 rounded-xl border border-white/20">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                    <p className="text-xs font-medium">État</p>
                   </div>
-                  
-                  <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl p-6 rounded-2xl border-2 border-white/20 shadow-xl hover:border-emerald-400/50 transition-all group">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center border border-emerald-400/30">
-                        <i className="fas fa-check-circle text-emerald-400"></i>
-                      </div>
-                      <p className="text-xs text-white/80 font-black uppercase tracking-wide">État Système</p>
-                    </div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="relative flex h-4 w-4">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500"></span>
-                      </span>
-                      <p className="text-2xl font-black text-emerald-300">OPÉRATIONNEL</p>
-                    </div>
-                    <p className="text-xs text-blue-300 font-bold">Synchronisé en temps réel</p>
-                  </div>
+                  <p className="text-lg font-bold text-emerald-300">Actif</p>
+                  <p className="text-xs text-blue-200 mt-1">Temps réel</p>
                 </div>
               </div>
             </div>
 
-            <section className="relative">
-              <div className="flex items-center justify-between mb-6 px-1">
+            <section>
+              <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-3">
-                    <div className="w-2 h-10 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full"></div>
-                    Équipements Récents
-                  </h3>
-                  <p className="text-sm text-slate-500 font-semibold mt-2 ml-5">Dernières entrées dans la base de données</p>
+                  <h3 className="text-lg font-bold text-slate-800">Équipements Récents</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">Dernières entrées</p>
                 </div>
-                <button onClick={() => setCurrentView('search')} className="group flex items-center gap-2 text-sm font-black text-white bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-3.5 rounded-xl uppercase tracking-wide hover:from-orange-600 hover:to-orange-700 transition-all border-2 border-orange-400 shadow-xl shadow-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/50">
+                <button onClick={() => setCurrentView('search')} className="flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition-all">
                   Voir Tout
-                  <i className="fas fa-arrow-left group-hover:translate-x-1 transition-transform"></i>
+                  <i className="fas fa-arrow-left text-xs"></i>
                 </button>
               </div>
-              <div className="space-y-5">
-                {EQUIPMENT_DATABASE.slice(0, 6).map(eq => (
+              <div className="space-y-3">{EQUIPMENT_DATABASE.slice(0, 6).map(eq => (
                   <EquipmentCard key={eq.id} equipment={eq} onClick={setSelectedEquipment} />
                 ))}
               </div>
@@ -564,7 +492,7 @@ export default function App() {
         );
       case 'search':
         return (
-          <div className="flex flex-col h-full overflow-hidden bg-gradient-to-b from-slate-50 to-white">
+          <div className="flex flex-col h-full overflow-hidden bg-slate-50">
             <SearchBar 
               onSearch={setSearchTerm} 
               filterType={filterType}
@@ -572,10 +500,10 @@ export default function App() {
               resultCount={filteredEquipment.length}
             />
             <div className="flex-1 overflow-y-auto p-6">
-              <div className="flex justify-between items-center mb-6 sticky top-0 bg-white/80 backdrop-blur-xl z-10 pb-4 rounded-2xl">
+              <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h2 className="text-2xl font-black text-slate-900">قائمة المعدات</h2>
-                  <p className="text-sm text-slate-500 mt-1 font-semibold">
+                  <h2 className="text-lg font-bold text-slate-800">قائمة المعدات</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
                     {filteredEquipment.length === 0 ? 'لا توجد نتائج' : 
                      filteredEquipment.length === 1 ? 'نتيجة واحدة' : 
                      `${filteredEquipment.length} نتيجة`}
@@ -583,16 +511,16 @@ export default function App() {
                   </p>
                 </div>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {displayedEquipment.map(eq => (
                   <EquipmentCard key={eq.id} equipment={eq} onClick={setSelectedEquipment} />
                 ))}
               </div>
               {displayedEquipment.length < filteredEquipment.length && (
-                <div className="text-center py-8">
+                <div className="text-center py-6">
                   <button 
                     onClick={() => setDisplayLimit(prev => prev + 50)}
-                    className="px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-black text-sm shadow-2xl hover:shadow-orange-500/50 hover:scale-105 transition-all border border-orange-400"
+                    className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold text-sm hover:bg-blue-700 transition-all"
                   >
                     <i className="fas fa-chevron-down mr-2"></i>
                     تحميل المزيد ({filteredEquipment.length - displayedEquipment.length} متبقية)
@@ -600,17 +528,17 @@ export default function App() {
                 </div>
               )}
               {filteredEquipment.length === 0 && (
-                <div className="text-center py-32 px-12">
-                  <div className="w-24 h-24 bg-orange-50 rounded-3xl flex items-center justify-center mx-auto mb-6 border-2 border-orange-200">
-                    <i className="fas fa-search-minus text-5xl text-orange-400"></i>
+                <div className="text-center py-20 px-8">
+                  <div className="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i className="fas fa-search-minus text-4xl text-slate-400"></i>
                   </div>
-                  <h3 className="text-xl font-black text-slate-900 mb-3">لم يتم العثور على نتائج</h3>
-                  <p className="text-sm text-slate-500 leading-relaxed max-w-md mx-auto">
+                  <h3 className="text-lg font-bold text-slate-800 mb-2">لم يتم العثور على نتائج</h3>
+                  <p className="text-sm text-slate-500 max-w-md mx-auto mb-4">
                     لم نجد أي معدات تطابق بحثك. جرب استخدام أرقام المعدات أو الأوصاف.
                   </p>
                   <button 
                     onClick={() => { setSearchTerm(''); setFilterType('الكل'); }}
-                    className="mt-6 px-6 py-3 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 transition-all"
+                    className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all"
                   >
                     مسح البحث
                   </button>
@@ -627,10 +555,10 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-7xl mx-auto bg-white overflow-hidden font-sans">
+    <div className="flex flex-col h-screen max-w-7xl mx-auto bg-slate-50 overflow-hidden font-sans">
       <Header />
       
-      <main className="flex-1 overflow-y-auto relative pb-24 scroll-smooth">
+      <main className="flex-1 overflow-y-auto relative pb-20 scroll-smooth">
         {renderContent()}
       </main>
 
@@ -641,8 +569,8 @@ export default function App() {
         />
       )}
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-2xl border-t-2 border-slate-200 py-4 px-6 z-40 max-w-7xl mx-auto shadow-2xl">
-        <div className="flex justify-around items-center relative">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-2 px-4 z-40 max-w-7xl mx-auto shadow-lg">
+        <div className="flex justify-around items-center">
           {[
             { id: 'dashboard', icon: 'fa-home', label: 'الرئيسية' },
             { id: 'search', icon: 'fa-search', label: 'البحث' },
@@ -651,19 +579,19 @@ export default function App() {
             <button 
               key={item.id}
               onClick={() => setCurrentView(item.id as ViewState)}
-              className={`flex flex-col items-center gap-1.5 transition-all duration-300 relative group flex-1 ${
-                currentView === item.id ? 'scale-110' : ''
+              className={`flex flex-col items-center gap-1 transition-all flex-1 py-2 rounded-lg ${
+                currentView === item.id ? 'bg-blue-50' : ''
               }`}
             >
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg ${
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
                 currentView === item.id 
-                  ? 'bg-gradient-to-br from-orange-500 to-orange-600 shadow-orange-500/50' 
-                  : 'bg-slate-100 group-hover:bg-slate-200'
+                  ? 'bg-blue-600 text-white' 
+                  : 'text-slate-500'
               }`}>
-                <i className={`fas ${item.icon} text-xl ${currentView === item.id ? 'text-white' : 'text-slate-600'}`}></i>
+                <i className={`fas ${item.icon}`}></i>
               </div>
-              <span className={`text-[10px] font-bold ${
-                currentView === item.id ? 'text-orange-600' : 'text-slate-500'
+              <span className={`text-[10px] font-medium ${
+                currentView === item.id ? 'text-blue-600' : 'text-slate-500'
               }`}>
                 {item.label}
               </span>
