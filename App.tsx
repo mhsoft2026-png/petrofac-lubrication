@@ -133,6 +133,8 @@ const EquipmentCard: React.FC<{ equipment: EquipmentData; onClick: (eq: Equipmen
 const DetailView: React.FC<{ equipment: EquipmentData; onClose: () => void }> = ({ equipment, onClose }) => {
   const [notes, setNotes] = React.useState<string>('');
   const [isEditing, setIsEditing] = React.useState(false);
+  const [lastLubricationDate, setLastLubricationDate] = React.useState<string | null>(null);
+  const [timeRemaining, setTimeRemaining] = React.useState<string>('');
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   
   React.useEffect(() => {
@@ -140,7 +142,63 @@ const DetailView: React.FC<{ equipment: EquipmentData; onClose: () => void }> = 
     if (savedNotes) {
       setNotes(savedNotes);
     }
+    
+    const savedDate = localStorage.getItem(`equipment-lubrication-${equipment.id}`);
+    if (savedDate) {
+      setLastLubricationDate(savedDate);
+    }
   }, [equipment.id]);
+  
+  // Calculate time remaining
+  React.useEffect(() => {
+    if (lastLubricationDate) {
+      const calculateTimeRemaining = () => {
+        const lastDate = new Date(lastLubricationDate);
+        const now = new Date();
+        const diffMs = now.getTime() - lastDate.getTime();
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        
+        // Parse interval (e.g., "3 months", "500 hours", "1 year")
+        const interval = equipment.topUpInterval || equipment.replacementInterval || '';
+        const intervalMatch = interval.match(/(\d+)\s*(day|days|hour|hours|month|months|year|years|week|weeks)/i);
+        
+        if (intervalMatch) {
+          const value = parseInt(intervalMatch[1]);
+          const unit = intervalMatch[2].toLowerCase();
+          
+          let totalDays = 0;
+          if (unit.includes('day')) totalDays = value;
+          else if (unit.includes('week')) totalDays = value * 7;
+          else if (unit.includes('month')) totalDays = value * 30;
+          else if (unit.includes('year')) totalDays = value * 365;
+          else if (unit.includes('hour')) totalDays = value / 24;
+          
+          const remainingDays = totalDays - diffDays;
+          
+          if (remainingDays > 0) {
+            if (remainingDays > 30) {
+              const months = Math.floor(remainingDays / 30);
+              const days = remainingDays % 30;
+              setTimeRemaining(`${months} شهر و ${days} يوم`);
+            } else {
+              setTimeRemaining(`${remainingDays} يوم`);
+            }
+          } else {
+            setTimeRemaining('متأخر! يحتاج تشحيم');
+          }
+        } else {
+          setTimeRemaining(`${diffDays} يوم منذ آخر تشحيم`);
+        }
+      };
+      
+      calculateTimeRemaining();
+      const interval = setInterval(calculateTimeRemaining, 60000); // Update every minute
+      return () => clearInterval(interval);
+    } else {
+      setTimeRemaining('لم يتم التشحيم بعد');
+    }
+  }, [lastLubricationDate, equipment.topUpInterval, equipment.replacementInterval]);
   
   // Focus textarea when editing mode is activated
   React.useEffect(() => {
@@ -157,6 +215,12 @@ const DetailView: React.FC<{ equipment: EquipmentData; onClose: () => void }> = 
   const saveNotes = () => {
     localStorage.setItem(`equipment-note-${equipment.id}`, notes);
     setIsEditing(false);
+  };
+  
+  const resetLubricationTimer = () => {
+    const now = new Date().toISOString();
+    localStorage.setItem(`equipment-lubrication-${equipment.id}`, now);
+    setLastLubricationDate(now);
   };
   
   return (
@@ -216,6 +280,77 @@ const DetailView: React.FC<{ equipment: EquipmentData; onClose: () => void }> = 
                 <span className="text-sm font-medium text-slate-800">{item.val}</span>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Lubrication Timer Section */}
+        <section className="bg-gradient-to-br from-emerald-50 to-white p-4 rounded-xl border-2 border-emerald-200">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-xs font-semibold text-emerald-700 flex items-center gap-2">
+              <i className="fas fa-clock text-emerald-600"></i>
+              حالة التشحيم
+            </h4>
+            <button
+              onClick={resetLubricationTimer}
+              className="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-medium hover:bg-emerald-700 transition-all flex items-center gap-1.5 shadow-md"
+            >
+              <i className="fas fa-redo"></i>
+              تم التشحيم الآن
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {lastLubricationDate && (
+              <div className="bg-white p-3 rounded-lg border border-emerald-200">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-slate-600">آخر تشحيم</span>
+                  <span className="text-xs font-medium text-slate-800">
+                    {new Date(lastLubricationDate).toLocaleDateString('ar-DZ', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-slate-600">الوقت المتبقي</span>
+                  <span className={`text-sm font-bold ${
+                    timeRemaining.includes('متأخر') 
+                      ? 'text-red-600' 
+                      : timeRemaining.includes('يوم') && parseInt(timeRemaining) < 7
+                      ? 'text-orange-600'
+                      : 'text-emerald-600'
+                  }`}>
+                    {timeRemaining}
+                  </span>
+                </div>
+              </div>
+            )}
+            
+            {!lastLubricationDate && (
+              <div className="text-center py-4 bg-white rounded-lg border border-emerald-200">
+                <i className="fas fa-clock text-3xl text-emerald-300 mb-2"></i>
+                <p className="text-xs text-slate-600 mb-3">لم يتم تسجيل تشحيم لهذه المعدة</p>
+                <p className="text-xs text-slate-500">اضغط على الزر أعلاه عند التشحيم</p>
+              </div>
+            )}
+            
+            <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+              <div className="flex items-start gap-2">
+                <i className="fas fa-info-circle text-blue-500 mt-0.5"></i>
+                <div className="flex-1">
+                  <p className="text-xs text-blue-800 font-medium mb-1">معلومات الفترة الزمنية</p>
+                  <p className="text-xs text-blue-700">
+                    <span className="font-medium">فترة الإضافة:</span> {equipment.topUpInterval}
+                  </p>
+                  <p className="text-xs text-blue-700">
+                    <span className="font-medium">فترة الاستبدال:</span> {equipment.replacementInterval}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
