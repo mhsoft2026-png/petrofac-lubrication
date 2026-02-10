@@ -6,11 +6,13 @@ This is the Android project folder for Petrofac Lubrication application.
 
 ### تقليل تحذيرات Google Play Protect:
 - **targetSdkVersion**: خُفّض من 36 إلى 30 (لتقليل التحذيرات)
-- **compileSdkVersion**: 35 (مطلوب لـ Capacitor)
+- **compileSdkVersion**: 36 (مطلوب لمكتبات AndroidX و Capacitor)
 - **usesCleartextTraffic**: مُفعّل للسماح بـ HTTP
 - **requestLegacyExternalStorage**: مُفعّل للتوافق مع الإصدارات القديمة
 
-**ملاحظة**: `compileSdkVersion` يجب أن يكون 35+ لأن Capacitor يستخدم APIs حديثة، لكن `targetSdkVersion` عند 30 يقلل تحذيرات Google Play Protect.
+**ملاحظة هامة**: 
+- `compileSdkVersion 36` ضروري لأن مكتبات androidx (activity 1.11.0, core 1.17.0) تتطلبه
+- `targetSdkVersion 30` يقلل تحذيرات Google Play Protect (هذا ما يهم للمستخدم)
 
 ## Quick Start
 
