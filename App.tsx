@@ -30,7 +30,7 @@ const Header: React.FC = () => (
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
           </span>
-          <span className="text-xs font-black text-emerald-300 uppercase tracking-wider">Live System</span>
+          <span className="text-xs font-black text-emerald-300 uppercase tracking-wider">Système Actif</span>
         </div>
       </div>
     </div>
@@ -161,89 +161,183 @@ const EquipmentCard: React.FC<{ equipment: EquipmentData; onClick: (eq: Equipmen
   </div>
 ));
 
-const DetailView: React.FC<{ equipment: EquipmentData; onClose: () => void }> = ({ equipment, onClose }) => (
-  <div className="fixed inset-0 bg-white z-[60] overflow-y-auto pb-20 animate-in slide-in-from-bottom duration-300">
-    <div className="sticky top-0 bg-white/80 backdrop-blur-md p-4 border-b flex items-center gap-4 z-10">
-      <button onClick={onClose} className="p-2 -ml-2 text-slate-600 hover:text-orange-600">
-        <i className="fas fa-arrow-left"></i>
-      </button>
-      <div className="flex-1">
-        <h2 className="font-bold text-slate-900 truncate leading-tight">{equipment.tagNo}</h2>
-        <p className="text-[10px] text-slate-500 font-bold uppercase">{equipment.package}</p>
+const DetailView: React.FC<{ equipment: EquipmentData; onClose: () => void }> = ({ equipment, onClose }) => {
+  const [notes, setNotes] = React.useState<string>('');
+  const [isEditing, setIsEditing] = React.useState(false);
+  
+  React.useEffect(() => {
+    const savedNotes = localStorage.getItem(`equipment-note-${equipment.id}`);
+    if (savedNotes) {
+      setNotes(savedNotes);
+    }
+  }, [equipment.id]);
+  
+  const saveNotes = () => {
+    localStorage.setItem(`equipment-note-${equipment.id}`, notes);
+    setIsEditing(false);
+  };
+  
+  return (
+    <div className="fixed inset-0 bg-white z-[60] overflow-y-auto pb-20 animate-in slide-in-from-bottom duration-300">
+      <div className="sticky top-0 bg-gradient-to-r from-blue-900 to-slate-900 backdrop-blur-md p-4 border-b-2 border-orange-500 flex items-center gap-4 z-10 shadow-xl">
+        <button onClick={onClose} className="p-2.5 -ml-2 text-white hover:text-orange-400 bg-white/10 rounded-xl hover:bg-white/20 transition-all">
+          <i className="fas fa-arrow-left text-lg"></i>
+        </button>
+        <div className="flex-1">
+          <h2 className="font-black text-white truncate leading-tight text-lg">{equipment.tagNo}</h2>
+          <p className="text-xs text-orange-300 font-bold uppercase tracking-wide">{equipment.package}</p>
+        </div>
+        <div className={`px-3 py-1.5 rounded-lg font-bold text-xs ${
+          equipment.type === LubricantType.OIL 
+            ? 'bg-blue-500 text-white' 
+            : 'bg-emerald-500 text-white'
+        }`}>
+          {equipment.type}
+        </div>
+      </div>
+
+      <div className="p-5 space-y-6 max-w-2xl mx-auto">
+        {/* Technical Data Section */}
+        <section className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-2xl border-2 border-slate-200 shadow-lg">
+          <h4 className="text-xs uppercase font-black text-orange-600 mb-4 tracking-widest flex items-center gap-2">
+            <i className="fas fa-info-circle"></i>
+            Données Techniques Principales
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white p-4 rounded-xl border border-slate-200">
+              <p className="text-[10px] text-slate-500 mb-2 font-bold uppercase">Description</p>
+              <p className="text-sm font-bold text-slate-900">{equipment.description}</p>
+            </div>
+            <div className="bg-white p-4 rounded-xl border border-slate-200">
+              <p className="text-[10px] text-slate-500 mb-2 font-bold uppercase">Partie Spécifique</p>
+              <p className="text-sm font-bold text-slate-900">{equipment.part}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Lubrication Parameters */}
+        <section className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-2xl border-2 border-blue-200 shadow-lg">
+          <h4 className="text-xs uppercase font-black text-blue-700 mb-4 tracking-widest flex items-center gap-2">
+            <i className="fas fa-cogs"></i>
+            Paramètres de Lubrification
+          </h4>
+          <div className="space-y-2 bg-white border-2 border-slate-200 rounded-xl overflow-hidden shadow-md">
+            {[
+              { label: 'Type de Lubrifiant', val: equipment.type, icon: 'fa-tint' },
+              { label: 'Grade ISO/NLGI', val: equipment.grade, icon: 'fa-vial' },
+              { label: 'Volume Initial', val: equipment.initialFill, icon: 'fa-fill-drip' },
+              { label: 'Intervalle de Remplissage', val: equipment.topUpInterval, icon: 'fa-hourglass-half' },
+              { label: 'Durée de Vie', val: equipment.replacementInterval, icon: 'fa-redo' },
+            ].map((item, idx) => (
+              <div key={idx} className="flex justify-between items-center px-5 py-4 border-b last:border-0 border-slate-100 hover:bg-slate-50 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                    <i className={`fas ${item.icon} text-white text-sm`}></i>
+                  </div>
+                  <span className="text-sm text-slate-700 font-bold">{item.label}</span>
+                </div>
+                <span className="text-sm font-black text-slate-900">{item.val}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Brands Section */}
+        <section className="bg-gradient-to-br from-purple-50 to-white p-6 rounded-2xl border-2 border-purple-200 shadow-lg">
+          <h4 className="text-xs uppercase font-black text-purple-700 mb-4 tracking-widest flex items-center gap-2">
+            <i className="fas fa-award"></i>
+            Produits Équivalents par Marque
+          </h4>
+          <div className="grid grid-cols-1 gap-3">
+            {Object.entries(equipment.brands).map(([brand, value]) => value && (
+              <div key={brand} className="flex items-center gap-4 p-4 bg-white border-2 border-slate-200 rounded-xl hover:border-purple-300 hover:shadow-md transition-all">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-xs font-black text-slate-700 uppercase border-2 border-slate-300 shadow-md">
+                  {brand.slice(0, 3)}
+                </div>
+                <div className="flex-1">
+                  <p className="text-[10px] text-slate-500 uppercase font-black tracking-wider">{brand}</p>
+                  <p className="text-sm font-bold text-slate-900 mt-1">{value}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Notes Section */}
+        <section className="bg-gradient-to-br from-green-50 to-white p-6 rounded-2xl border-2 border-green-300 shadow-lg">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-xs uppercase font-black text-green-700 tracking-widest flex items-center gap-2">
+              <i className="fas fa-sticky-note"></i>
+              Notes et Observations
+            </h4>
+            {!isEditing && (
+              <button 
+                onClick={() => setIsEditing(true)}
+                className="px-4 py-2 bg-green-600 text-white rounded-xl text-xs font-bold hover:bg-green-700 transition-all shadow-md flex items-center gap-2"
+              >
+                <i className="fas fa-edit"></i>
+                {notes ? 'Modifier' : 'Ajouter Note'}
+              </button>
+            )}
+          </div>
+          
+          {isEditing ? (
+            <div className="space-y-3">
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="✍️ Entrez vos observations, remarques ou notes techniques..."
+                className="w-full p-4 bg-white border-2 border-green-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 min-h-[150px] font-medium resize-none"
+              />
+              <div className="flex gap-2">
+                <button 
+                  onClick={saveNotes}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl text-sm font-black hover:from-green-700 hover:to-green-800 transition-all shadow-lg flex items-center justify-center gap-2"
+                >
+                  <i className="fas fa-save"></i>
+                  Enregistrer
+                </button>
+                <button 
+                  onClick={() => setIsEditing(false)}
+                  className="px-4 py-3 bg-slate-200 text-slate-700 rounded-xl text-sm font-bold hover:bg-slate-300 transition-all"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          ) : notes ? (
+            <div className="bg-white p-4 rounded-xl border-2 border-slate-200 shadow-inner">
+              <p className="text-sm text-slate-700 whitespace-pre-wrap font-medium leading-relaxed">{notes}</p>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-slate-400">
+              <i className="fas fa-sticky-note text-5xl mb-3 opacity-30"></i>
+              <p className="text-sm font-semibold">Aucune note ajoutée</p>
+            </div>
+          )}
+        </section>
+
+        {/* Remarks Section */}
+        <section className="bg-gradient-to-br from-orange-500 to-red-600 p-6 rounded-2xl shadow-2xl text-white">
+          <h4 className="text-xs uppercase font-black text-orange-100 mb-3 flex items-center gap-2">
+            <i className="fas fa-exclamation-triangle"></i>
+            Notes d'Ingénierie
+          </h4>
+          <p className="text-sm leading-relaxed font-semibold">
+            {equipment.remarks}
+          </p>
+        </section>
       </div>
     </div>
-
-    <div className="p-4 space-y-6 max-w-lg mx-auto">
-      <section className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-        <h4 className="text-[10px] uppercase font-bold text-slate-400 mb-3 tracking-widest">Main Technical Data</h4>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-[10px] text-slate-500 mb-1">Description</p>
-            <p className="text-xs font-semibold text-slate-900">{equipment.description}</p>
-          </div>
-          <div>
-            <p className="text-[10px] text-slate-500 mb-1">Specific Part</p>
-            <p className="text-xs font-semibold text-slate-900">{equipment.part}</p>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <h4 className="text-[10px] uppercase font-bold text-slate-400 mb-3 tracking-widest">Lubrication Parameters</h4>
-        <div className="space-y-1 bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
-          {[
-            { label: 'Fluid Modality', val: equipment.type, icon: 'fa-tint' },
-            { label: 'ISO/NLGI Grade', val: equipment.grade, icon: 'fa-vial' },
-            { label: 'Initial Volume', val: equipment.initialFill, icon: 'fa-fill-drip' },
-            { label: 'Top-Up Logic', val: equipment.topUpInterval, icon: 'fa-hourglass-half' },
-            { label: 'Service Life', val: equipment.replacementInterval, icon: 'fa-redo' },
-          ].map((item, idx) => (
-            <div key={idx} className="flex justify-between items-center px-4 py-3 border-b last:border-0 border-slate-50 hover:bg-slate-50 transition-colors">
-              <div className="flex items-center gap-3">
-                <i className={`fas ${item.icon} text-slate-300 w-4 text-center`}></i>
-                <span className="text-xs text-slate-600 font-medium">{item.label}</span>
-              </div>
-              <span className="text-xs font-bold text-slate-900">{item.val}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h4 className="text-[10px] uppercase font-bold text-slate-400 mb-3 tracking-widest">Equivalent Products</h4>
-        <div className="grid grid-cols-1 gap-2">
-          {Object.entries(equipment.brands).map(([brand, value]) => value && (
-            <div key={brand} className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl hover:border-orange-200 transition-all">
-              <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 uppercase border border-slate-100">
-                {brand.slice(0, 3)}
-              </div>
-              <div>
-                <p className="text-[9px] text-slate-500 uppercase font-black tracking-tighter">{brand}</p>
-                <p className="text-xs font-bold text-slate-900">{value}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-orange-600 p-5 rounded-2xl shadow-lg shadow-orange-100 text-white">
-        <h4 className="text-[10px] uppercase font-bold text-orange-200 mb-2 flex items-center gap-2">
-          <i className="fas fa-info-circle"></i> Engineering Notes
-        </h4>
-        <p className="text-xs leading-relaxed font-medium">
-          {equipment.remarks}
-        </p>
-      </section>
-    </div>
-  </div>
-);
+  );
+};
 
 const AIExpert: React.FC = () => {
   const [query, setQuery] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [messages, setMessages] = useState<{role: 'user' | 'bot', text: string, image?: string}[]>([
-    {role: 'bot', text: "Engineering Department updated. The master database for Ain Tsila is now fully integrated. Ask me about any system (100, 301, 401, 800 series) or scan a technical manual page."}
+    {role: 'bot', text: "Département Ingénierie mis à jour. La base de données principale d'Ain Tsila est maintenant entièrement intégrée. Posez-moi des questions sur n'importe quel système (séries 100, 301, 401, 800) ou scannez une page de manuel technique."}
   ]);
   const [loading, setLoading] = useState(false);
 
@@ -260,12 +354,12 @@ const AIExpert: React.FC = () => {
     if (!query.trim() && !selectedImage) return;
     const userMsg = query;
     const userImg = selectedImage;
-    setMessages(prev => [...prev, { role: 'user', text: userMsg || "Analyzing scan...", image: userImg || undefined }]);
+    setMessages(prev => [...prev, { role: 'user', text: userMsg || "Analyse en cours...", image: userImg || undefined }]);
     setQuery('');
     setSelectedImage(null);
     setLoading(true);
     const botResponse = await askGemini(userMsg, userImg?.split(',')[1]);
-    setMessages(prev => [...prev, { role: 'bot', text: botResponse || 'System error. Please retry.' }]);
+    setMessages(prev => [...prev, { role: 'bot', text: botResponse || 'Erreur système. Veuillez réessayer.' }]);
     setLoading(false);
   };
 
@@ -297,7 +391,7 @@ const AIExpert: React.FC = () => {
           <div className="mb-2 p-2 bg-orange-50 rounded-xl flex items-center justify-between border border-orange-100">
             <div className="flex items-center gap-2">
               <img src={selectedImage} className="w-12 h-12 object-cover rounded border" alt="Preview" />
-              <span className="text-[10px] font-bold text-orange-600">Manual Scan Ready</span>
+              <span className="text-[10px] font-bold text-orange-600">Scan Manuel Prêt</span>
             </div>
             <button onClick={() => setSelectedImage(null)} className="text-slate-400"><i className="fas fa-times"></i></button>
           </div>
@@ -309,7 +403,7 @@ const AIExpert: React.FC = () => {
           <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageSelect} />
           <input 
             type="text" value={query} onChange={(e) => setQuery(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAsk()}
-            placeholder="Search master tags or ask AI..." className="flex-1 px-4 py-3 bg-slate-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-600"
+            placeholder="Rechercher des tags ou demander à l'IA..." className="flex-1 px-4 py-3 bg-slate-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-600"
           />
           <button onClick={handleAsk} disabled={loading || (!query.trim() && !selectedImage)} className="w-12 h-12 bg-orange-600 text-white rounded-xl flex items-center justify-center disabled:opacity-50 shadow-lg shadow-orange-200">
             <i className="fas fa-paper-plane"></i>
