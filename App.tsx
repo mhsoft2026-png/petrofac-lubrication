@@ -7,28 +7,31 @@ import { askGemini } from './services/geminiService';
 // --- Components ---
 
 const Header: React.FC = () => (
-  <header className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-6 py-4 sticky top-0 z-50 shadow-xl border-b border-slate-700">
+  <header className="bg-gradient-to-r from-blue-900 via-blue-800 to-slate-900 px-6 py-5 sticky top-0 z-50 shadow-2xl border-b-4 border-orange-500">
     <div className="flex items-center justify-between max-w-7xl mx-auto">
       <div className="flex items-center gap-4">
-        <div className="relative">
-          <div className="absolute inset-0 bg-orange-500 blur-lg opacity-50 rounded-2xl"></div>
-          <div className="relative bg-gradient-to-br from-orange-500 to-orange-600 text-white p-3 rounded-2xl shadow-2xl">
-            <i className="fas fa-oil-can text-xl"></i>
+        <div className="relative group">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-500 blur-xl opacity-60 rounded-3xl group-hover:opacity-80 transition-opacity"></div>
+          <div className="relative bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 text-white p-4 rounded-3xl shadow-2xl transform group-hover:scale-105 transition-transform">
+            <i className="fas fa-oil-can text-2xl"></i>
           </div>
         </div>
         <div>
-          <h1 className="text-lg font-black text-white leading-none tracking-tight">PETROFAC</h1>
-          <p className="text-[11px] text-orange-400 uppercase tracking-[0.15em] font-bold mt-0.5">Ain Tsila Lubrication System</p>
+          <h1 className="text-xl font-black text-white leading-none tracking-tight bg-gradient-to-r from-white to-orange-200 bg-clip-text text-transparent">LUBRIFICATION ET LUBRIFIANTS</h1>
+          <p className="text-xs text-orange-300 uppercase tracking-[0.2em] font-extrabold mt-1 flex items-center gap-2">
+            <span className="w-1 h-1 bg-orange-400 rounded-full"></span>
+            ATL - Ain Tsila
+          </p>
         </div>
       </div>
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/30">
-          <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-lg shadow-emerald-400/50"></span>
-          <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Live</span>
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 bg-gradient-to-r from-emerald-500/20 to-green-500/20 px-4 py-2 rounded-full border-2 border-emerald-400/40 backdrop-blur-sm">
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+          </span>
+          <span className="text-xs font-black text-emerald-300 uppercase tracking-wider">Live System</span>
         </div>
-        <button className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-lg">
-          <i className="fas fa-ellipsis-v"></i>
-        </button>
       </div>
     </div>
   </header>
@@ -43,47 +46,61 @@ const SearchBar: React.FC<{
   const [showFilters, setShowFilters] = React.useState(false);
   
   return (
-    <div className="px-6 py-6 bg-gradient-to-b from-slate-800 to-slate-900">
-      <div className="relative max-w-4xl mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-blue-500/10 blur-2xl rounded-3xl"></div>
-        <div className="relative space-y-3">
-          <div className="flex gap-2">
-            <div className="flex-1 relative">
+    <div className="px-6 py-8 bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <div className="relative max-w-5xl mx-auto">
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-400/10 via-blue-400/10 to-purple-400/10 blur-3xl rounded-3xl"></div>
+        <div className="relative space-y-4">
+          <div className="flex gap-3">
+            <div className="flex-1 relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-blue-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
               <input 
                 type="text" 
-                placeholder="ابحث بـ: رقم المعدة، النوع، الوصف، الماركة..." 
-                className="w-full pl-12 pr-6 py-4 bg-white/95 backdrop-blur-xl rounded-2xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all border border-slate-200 focus:border-orange-500 shadow-lg"
+                placeholder="🔍 Rechercher: TAG, Description, Type, Marque, Grade..." 
+                className="relative w-full pl-14 pr-6 py-5 bg-white/90 backdrop-blur-xl rounded-2xl text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-orange-500/30 transition-all border-2 border-slate-200 focus:border-orange-500 shadow-xl font-semibold"
                 onChange={(e) => onSearch(e.target.value)}
               />
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500">
-                <i className="fas fa-search text-lg"></i>
+              <div className="absolute left-5 top-1/2 -translate-y-1/2 text-orange-500">
+                <i className="fas fa-search text-xl"></i>
               </div>
             </div>
             <button 
               onClick={() => setShowFilters(!showFilters)}
-              className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg ${
-                showFilters ? 'bg-orange-500 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
+              className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all shadow-xl border-2 ${
+                showFilters 
+                  ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white border-orange-400 shadow-orange-500/50' 
+                  : 'bg-white text-slate-700 hover:bg-slate-50 border-slate-200'
               }`}
             >
-              <i className="fas fa-sliders-h text-lg"></i>
+              <i className="fas fa-filter text-xl"></i>
             </button>
           </div>
           
           {showFilters && (
-            <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-4 border border-slate-200 shadow-lg animate-in slide-in-from-top-2 duration-200">
-              <p className="text-xs font-bold text-slate-500 mb-3 uppercase">فلتر حسب النوع</p>
-              <div className="flex gap-2 flex-wrap">
-                {['الكل', 'OIL', 'GREASE'].map(type => (
+            <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-5 border-2 border-slate-200 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs font-black text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                  <i className="fas fa-layer-group text-orange-500"></i>
+                  Filtrer par Type de Lubrifiant
+                </p>
+                <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">{resultCount} résultats</span>
+              </div>
+              <div className="flex gap-3 flex-wrap">
+                {[
+                  { type: 'الكل', label: 'Tous', icon: 'fa-th-large', color: 'slate' },
+                  { type: 'OIL', label: 'Huiles', icon: 'fa-tint', color: 'blue' },
+                  { type: 'GREASE', label: 'Graisses', icon: 'fa-fill-drip', color: 'emerald' }
+                ].map(item => (
                   <button
-                    key={type}
-                    onClick={() => onFilterChange(type)}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                      filterType === type
-                        ? 'bg-orange-500 text-white shadow-lg'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    key={item.type}
+                    onClick={() => onFilterChange(item.type)}
+                    className={`flex-1 px-5 py-3 rounded-xl text-sm font-black transition-all border-2 shadow-lg ${
+                      filterType === item.type
+                        ? `bg-gradient-to-r from-${item.color}-500 to-${item.color}-600 text-white border-${item.color}-400 shadow-${item.color}-500/50 scale-105`
+                        : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
                     }`}
                   >
-                    {type === 'الكل' ? `${type} (${resultCount})` : type}
+                    <i className={`fas ${item.icon} mr-2`}></i>
+                    {item.label}
                   </button>
                 ))}
               </div>
@@ -97,37 +114,49 @@ const SearchBar: React.FC<{
 
 const EquipmentCard: React.FC<{ equipment: EquipmentData; onClick: (eq: EquipmentData) => void }> = React.memo(({ equipment, onClick }) => (
   <div 
-    className="group bg-white rounded-2xl p-6 border-2 border-slate-200 hover:border-orange-400 active:scale-[0.98] transition-all cursor-pointer hover:shadow-xl relative overflow-hidden"
+    className="group bg-gradient-to-br from-white to-slate-50 rounded-2xl p-6 border-2 border-slate-200 hover:border-orange-500 hover:shadow-2xl hover:shadow-orange-500/20 active:scale-[0.98] transition-all duration-300 cursor-pointer relative overflow-hidden"
     onClick={() => onClick(equipment)}
   >
-    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-100 to-transparent rounded-full -mr-16 -mt-16 opacity-50"></div>
+    <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-orange-200 via-orange-100 to-transparent rounded-full -mr-20 -mt-20 opacity-30 group-hover:opacity-50 transition-opacity"></div>
+    <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-blue-200 via-blue-100 to-transparent rounded-full -ml-16 -mb-16 opacity-20"></div>
+    
     <div className="relative">
       <div className="flex justify-between items-start mb-4">
-        <span className="text-[10px] font-black text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg uppercase tracking-wider border border-slate-200">{equipment.package}</span>
-        <span className={`text-[10px] font-black px-3 py-1.5 rounded-lg uppercase border-2 ${
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full animate-pulse"></div>
+          <span className="text-[10px] font-black text-slate-600 bg-gradient-to-r from-slate-100 to-slate-50 px-3 py-1.5 rounded-xl uppercase tracking-wider border-2 border-slate-200">{equipment.package}</span>
+        </div>
+        <span className={`text-[10px] font-black px-4 py-2 rounded-xl uppercase border-2 shadow-lg ${
           equipment.type === LubricantType.OIL 
-            ? 'bg-blue-50 text-blue-700 border-blue-300' 
-            : 'bg-emerald-50 text-emerald-700 border-emerald-300'
+            ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-400 shadow-blue-500/30' 
+            : 'bg-gradient-to-r from-emerald-500 to-green-600 text-white border-emerald-400 shadow-emerald-500/30'
         }`}>
-          <i className={`fas ${equipment.type === LubricantType.OIL ? 'fa-tint' : 'fa-fill-drip'} mr-1`}></i>
+          <i className={`fas ${equipment.type === LubricantType.OIL ? 'fa-tint' : 'fa-fill-drip'} mr-1.5`}></i>
           {equipment.type}
         </span>
       </div>
-      <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:text-orange-600 transition-colors">{equipment.tagNo}</h3>
-      <p className="text-sm text-slate-600 line-clamp-2 mb-4 leading-relaxed font-medium">{equipment.description}</p>
-      <div className="flex items-center gap-6 text-xs text-slate-600 font-bold border-t-2 border-slate-100 pt-4">
-        <div className="flex items-center gap-2">
-          <i className="fas fa-flask text-orange-500"></i>
-          <span className="text-slate-700">{equipment.grade}</span>
+      
+      <div className="mb-4">
+        <h3 className="text-2xl font-black text-slate-900 mb-2 group-hover:text-orange-600 transition-colors bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text">{equipment.tagNo}</h3>
+        <p className="text-sm text-slate-600 line-clamp-2 leading-relaxed font-semibold">{equipment.description}</p>
+      </div>
+      
+      <div className="flex items-center gap-6 text-xs font-bold border-t-2 border-slate-200 pt-4 mt-4">
+        <div className="flex items-center gap-2 bg-orange-50 px-3 py-2 rounded-xl border border-orange-200">
+          <i className="fas fa-flask text-orange-600"></i>
+          <span className="text-slate-800">{equipment.grade}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <i className="fas fa-clock text-blue-500"></i>
-          <span className="text-slate-700">{equipment.replacementInterval || 'On Analysis'}</span>
+        <div className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-xl border border-blue-200">
+          <i className="fas fa-clock text-blue-600"></i>
+          <span className="text-slate-800">{equipment.replacementInterval || 'On Analysis'}</span>
         </div>
       </div>
     </div>
-    <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-      <i className="fas fa-arrow-right text-orange-500 text-xl"></i>
+    
+    <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-1">
+      <div className="bg-orange-500 text-white p-3 rounded-xl shadow-lg">
+        <i className="fas fa-arrow-right text-lg"></i>
+      </div>
     </div>
   </div>
 ));
@@ -358,45 +387,80 @@ export default function App() {
       case 'dashboard':
         return (
           <div className="p-6 space-y-6 bg-gradient-to-b from-slate-50 to-white min-h-screen">
-            <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full -ml-24 -mb-24"></div>
+            <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden border-4 border-orange-500/30">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-orange-500/20 to-transparent rounded-full -mr-40 -mt-40"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-blue-500/20 to-transparent rounded-full -ml-32 -mb-32"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full">
+                <div className="absolute inset-0 opacity-5">
+                  <i className="fas fa-oil-can text-[20rem] text-white"></i>
+                </div>
+              </div>
+              
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-8">
                   <div>
-                    <p className="text-xs font-black uppercase tracking-[0.2em] text-orange-200 mb-2">نظرة عامة على النظام</p>
-                    <h2 className="text-3xl font-black leading-tight">قاعدة بيانات<br/>التشحيم - عين التسيلة</h2>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-1 h-8 bg-gradient-to-b from-orange-400 to-orange-600 rounded-full"></div>
+                      <p className="text-xs font-black uppercase tracking-[0.25em] text-orange-300">Système de Lubrification</p>
+                    </div>
+                    <h2 className="text-4xl font-black leading-tight bg-gradient-to-r from-white via-orange-100 to-white bg-clip-text text-transparent">BASE DE DONNÉES<br/>LUBRIFIANTS ATL</h2>
+                    <p className="text-sm text-blue-200 mt-2 font-bold">Ain Tsila Production Facility</p>
                   </div>
-                  <div className="w-14 h-14 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/20 shadow-2xl">
-                    <i className="fas fa-database text-2xl"></i>
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-amber-600 blur-xl opacity-50"></div>
+                    <div className="relative w-20 h-20 bg-gradient-to-br from-orange-500 via-orange-600 to-amber-600 backdrop-blur-xl rounded-3xl flex items-center justify-center border-2 border-orange-400/50 shadow-2xl transform hover:scale-110 transition-transform">
+                      <i className="fas fa-database text-3xl"></i>
+                    </div>
                   </div>
                 </div>
+                
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white/10 backdrop-blur-xl p-5 rounded-2xl border border-white/20 shadow-xl">
-                    <p className="text-xs text-white/70 mb-2 font-bold uppercase tracking-wide">إجمالي المعدات</p>
-                    <p className="text-4xl font-black">{EQUIPMENT_DATABASE.length}</p>
-                    <p className="text-[10px] text-white/60 mt-1">معدة نشطة</p>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-xl p-5 rounded-2xl border border-white/20 shadow-xl">
-                    <p className="text-xs text-white/70 mb-2 font-bold uppercase tracking-wide">حالة النظام</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse shadow-lg shadow-emerald-400/50"></span>
-                      <p className="text-xl font-black text-emerald-300">متصل</p>
+                  <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl p-6 rounded-2xl border-2 border-white/20 shadow-xl hover:border-orange-400/50 transition-all group">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center border border-orange-400/30">
+                        <i className="fas fa-cogs text-orange-400"></i>
+                      </div>
+                      <p className="text-xs text-white/80 font-black uppercase tracking-wide">Total Équipements</p>
                     </div>
-                    <p className="text-[10px] text-white/60 mt-1">متزامن بالكامل</p>
+                    <p className="text-5xl font-black bg-gradient-to-r from-white to-orange-200 bg-clip-text text-transparent">{EQUIPMENT_DATABASE.length}</p>
+                    <p className="text-xs text-blue-300 mt-2 font-bold">Machines actives</p>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl p-6 rounded-2xl border-2 border-white/20 shadow-xl hover:border-emerald-400/50 transition-all group">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center border border-emerald-400/30">
+                        <i className="fas fa-check-circle text-emerald-400"></i>
+                      </div>
+                      <p className="text-xs text-white/80 font-black uppercase tracking-wide">État Système</p>
+                    </div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="relative flex h-4 w-4">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500"></span>
+                      </span>
+                      <p className="text-2xl font-black text-emerald-300">OPÉRATIONNEL</p>
+                    </div>
+                    <p className="text-xs text-blue-300 font-bold">Synchronisé en temps réel</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <section className="relative">
-              <div className="flex items-center justify-between mb-5 px-1">
-                <h3 className="text-lg font-black text-slate-900 uppercase tracking-wide">المعدات الحديثة</h3>
-                <button onClick={() => setCurrentView('search')} className="text-xs font-bold text-orange-600 bg-orange-50 px-5 py-2.5 rounded-xl uppercase tracking-wider hover:bg-orange-100 transition-all border-2 border-orange-200">
-                  عرض الكل <i className="fas fa-arrow-left ml-2"></i>
+              <div className="flex items-center justify-between mb-6 px-1">
+                <div>
+                  <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight flex items-center gap-3">
+                    <div className="w-2 h-10 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full"></div>
+                    Équipements Récents
+                  </h3>
+                  <p className="text-sm text-slate-500 font-semibold mt-2 ml-5">Dernières entrées dans la base de données</p>
+                </div>
+                <button onClick={() => setCurrentView('search')} className="group flex items-center gap-2 text-sm font-black text-white bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-3.5 rounded-xl uppercase tracking-wide hover:from-orange-600 hover:to-orange-700 transition-all border-2 border-orange-400 shadow-xl shadow-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/50">
+                  Voir Tout
+                  <i className="fas fa-arrow-left group-hover:translate-x-1 transition-transform"></i>
                 </button>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {EQUIPMENT_DATABASE.slice(0, 6).map(eq => (
                   <EquipmentCard key={eq.id} equipment={eq} onClick={setSelectedEquipment} />
                 ))}
