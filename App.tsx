@@ -34,58 +34,100 @@ const Header: React.FC = () => (
   </header>
 );
 
-const SearchBar: React.FC<{ onSearch: (val: string) => void }> = ({ onSearch }) => (
-  <div className="px-6 py-6 bg-gradient-to-b from-slate-900 to-slate-800">
-    <div className="relative max-w-4xl mx-auto">
-      <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-blue-500/20 blur-2xl rounded-3xl"></div>
-      <div className="relative">
-        <input 
-          type="text" 
-          placeholder="Search by Tag Number, System ID, or Equipment Description..." 
-          className="w-full pl-14 pr-6 py-4 bg-slate-800/50 backdrop-blur-xl rounded-2xl text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all border border-slate-700/50 focus:border-orange-500/50 shadow-2xl"
-          onChange={(e) => onSearch(e.target.value)}
-        />
-        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-orange-400">
-          <i className="fas fa-search text-lg"></i>
-        </div>
-        <div className="absolute right-5 top-1/2 -translate-y-1/2 flex gap-2">
-          <span className="text-[10px] font-bold text-slate-500 bg-slate-700/50 px-2 py-1 rounded uppercase">Ctrl+K</span>
+const SearchBar: React.FC<{ 
+  onSearch: (val: string) => void; 
+  filterType: string;
+  onFilterChange: (type: string) => void;
+  resultCount: number;
+}> = ({ onSearch, filterType, onFilterChange, resultCount }) => {
+  const [showFilters, setShowFilters] = React.useState(false);
+  
+  return (
+    <div className="px-6 py-6 bg-gradient-to-b from-slate-800 to-slate-900">
+      <div className="relative max-w-4xl mx-auto">
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-blue-500/10 blur-2xl rounded-3xl"></div>
+        <div className="relative space-y-3">
+          <div className="flex gap-2">
+            <div className="flex-1 relative">
+              <input 
+                type="text" 
+                placeholder="ابحث بـ: رقم المعدة، النوع، الوصف، الماركة..." 
+                className="w-full pl-12 pr-6 py-4 bg-white/95 backdrop-blur-xl rounded-2xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all border border-slate-200 focus:border-orange-500 shadow-lg"
+                onChange={(e) => onSearch(e.target.value)}
+              />
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500">
+                <i className="fas fa-search text-lg"></i>
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowFilters(!showFilters)}
+              className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg ${
+                showFilters ? 'bg-orange-500 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <i className="fas fa-sliders-h text-lg"></i>
+            </button>
+          </div>
+          
+          {showFilters && (
+            <div className="bg-white/95 backdrop-blur-xl rounded-2xl p-4 border border-slate-200 shadow-lg animate-in slide-in-from-top-2 duration-200">
+              <p className="text-xs font-bold text-slate-500 mb-3 uppercase">فلتر حسب النوع</p>
+              <div className="flex gap-2 flex-wrap">
+                {['الكل', 'OIL', 'GREASE'].map(type => (
+                  <button
+                    key={type}
+                    onClick={() => onFilterChange(type)}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                      filterType === type
+                        ? 'bg-orange-500 text-white shadow-lg'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {type === 'الكل' ? `${type} (${resultCount})` : type}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const EquipmentCard: React.FC<{ equipment: EquipmentData; onClick: (eq: EquipmentData) => void }> = React.memo(({ equipment, onClick }) => (
   <div 
-    className="group bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-5 border border-slate-700 hover:border-orange-500/50 active:scale-[0.98] transition-all cursor-pointer mb-4 hover:shadow-2xl hover:shadow-orange-500/10 relative overflow-hidden"
+    className="group bg-white rounded-2xl p-6 border-2 border-slate-200 hover:border-orange-400 active:scale-[0.98] transition-all cursor-pointer hover:shadow-xl relative overflow-hidden"
     onClick={() => onClick(equipment)}
   >
-    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-500/5 to-transparent rounded-full -mr-16 -mt-16"></div>
+    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-100 to-transparent rounded-full -mr-16 -mt-16 opacity-50"></div>
     <div className="relative">
-      <div className="flex justify-between items-start mb-3">
-        <span className="text-[10px] font-black text-slate-500 bg-slate-700/50 px-3 py-1.5 rounded-lg uppercase tracking-wider border border-slate-600/50">{equipment.package}</span>
-        <span className={`text-[10px] font-black px-3 py-1.5 rounded-lg uppercase border ${
+      <div className="flex justify-between items-start mb-4">
+        <span className="text-[10px] font-black text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg uppercase tracking-wider border border-slate-200">{equipment.package}</span>
+        <span className={`text-[10px] font-black px-3 py-1.5 rounded-lg uppercase border-2 ${
           equipment.type === LubricantType.OIL 
-            ? 'bg-blue-500/10 text-blue-400 border-blue-500/30' 
-            : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+            ? 'bg-blue-50 text-blue-700 border-blue-300' 
+            : 'bg-emerald-50 text-emerald-700 border-emerald-300'
         }`}>
           <i className={`fas ${equipment.type === LubricantType.OIL ? 'fa-tint' : 'fa-fill-drip'} mr-1`}></i>
           {equipment.type}
         </span>
       </div>
-      <h3 className="text-lg font-black text-white mb-2 group-hover:text-orange-400 transition-colors">{equipment.tagNo}</h3>
-      <p className="text-sm text-slate-400 line-clamp-2 mb-4 leading-relaxed">{equipment.description}</p>
-      <div className="flex items-center gap-6 text-xs text-slate-500 font-semibold border-t border-slate-700/50 pt-4">
+      <h3 className="text-xl font-black text-slate-900 mb-2 group-hover:text-orange-600 transition-colors">{equipment.tagNo}</h3>
+      <p className="text-sm text-slate-600 line-clamp-2 mb-4 leading-relaxed font-medium">{equipment.description}</p>
+      <div className="flex items-center gap-6 text-xs text-slate-600 font-bold border-t-2 border-slate-100 pt-4">
         <div className="flex items-center gap-2">
-          <i className="fas fa-flask text-orange-400"></i>
-          <span className="text-slate-300">{equipment.grade}</span>
+          <i className="fas fa-flask text-orange-500"></i>
+          <span className="text-slate-700">{equipment.grade}</span>
         </div>
         <div className="flex items-center gap-2">
-          <i className="fas fa-clock text-blue-400"></i>
-          <span className="text-slate-300">{equipment.replacementInterval || 'On Analysis'}</span>
+          <i className="fas fa-clock text-blue-500"></i>
+          <span className="text-slate-700">{equipment.replacementInterval || 'On Analysis'}</span>
         </div>
       </div>
+    </div>
+    <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+      <i className="fas fa-arrow-right text-orange-500 text-xl"></i>
     </div>
   </div>
 ));
@@ -256,26 +298,54 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentData | null>(null);
   const [displayLimit, setDisplayLimit] = useState(50);
+  const [filterType, setFilterType] = useState('الكل');
 
   const filteredEquipment = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
-    if (!term) return EQUIPMENT_DATABASE;
+    let results = EQUIPMENT_DATABASE;
     
-    return EQUIPMENT_DATABASE.filter(item => {
-      // Exact match for tagNo has priority
-      if (item.tagNo.toLowerCase() === term) return true;
+    // Apply type filter first
+    if (filterType !== 'الكل') {
+      results = results.filter(item => item.type === filterType);
+    }
+    
+    // If no search term, return filtered results
+    if (!term) return results;
+    
+    // Enhanced search logic
+    return results.filter(item => {
+      // Search in Tag Number
+      if (item.tagNo.toLowerCase().includes(term)) return true;
       
-      // If search term looks like a tag (contains dash), only match exact tagNo
-      if (term.includes('-')) {
-        return item.tagNo.toLowerCase() === term;
-      }
+      // Search in Description
+      if (item.description.toLowerCase().includes(term)) return true;
       
-      // For non-tag searches, search in all fields
-      return item.tagNo.toLowerCase().includes(term) ||
-             item.description.toLowerCase().includes(term) ||
-             item.package.toLowerCase().includes(term);
+      // Search in Package
+      if (item.package.toLowerCase().includes(term)) return true;
+      
+      // Search in Part
+      if (item.part.toLowerCase().includes(term)) return true;
+      
+      // Search in Grade
+      if (item.grade.toLowerCase().includes(term)) return true;
+      
+      // Search in Type
+      if (item.type.toLowerCase().includes(term)) return true;
+      
+      // Search in Brands
+      const brandValues = Object.values(item.brands).filter(v => v);
+      if (brandValues.some(brand => brand.toLowerCase().includes(term))) return true;
+      
+      // Search in Initial Fill
+      if (item.initialFill.toLowerCase().includes(term)) return true;
+      
+      // Search in Intervals
+      if (item.topUpInterval?.toLowerCase().includes(term)) return true;
+      if (item.replacementInterval?.toLowerCase().includes(term)) return true;
+      
+      return false;
     });
-  }, [searchTerm]);
+  }, [searchTerm, filterType]);
 
   const displayedEquipment = useMemo(() => {
     return filteredEquipment
@@ -287,15 +357,15 @@ export default function App() {
     switch (currentView) {
       case 'dashboard':
         return (
-          <div className="p-6 space-y-6 bg-slate-900 min-h-screen">
+          <div className="p-6 space-y-6 bg-gradient-to-b from-slate-50 to-white min-h-screen">
             <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"></div>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full -ml-24 -mb-24"></div>
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-8">
                   <div>
-                    <p className="text-xs font-black uppercase tracking-[0.2em] text-orange-200 mb-2">System Overview</p>
-                    <h2 className="text-3xl font-black leading-tight">Ain Tsila<br/>Lubrication Database</h2>
+                    <p className="text-xs font-black uppercase tracking-[0.2em] text-orange-200 mb-2">نظرة عامة على النظام</p>
+                    <h2 className="text-3xl font-black leading-tight">قاعدة بيانات<br/>التشحيم - عين التسيلة</h2>
                   </div>
                   <div className="w-14 h-14 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/20 shadow-2xl">
                     <i className="fas fa-database text-2xl"></i>
@@ -303,17 +373,17 @@ export default function App() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white/10 backdrop-blur-xl p-5 rounded-2xl border border-white/20 shadow-xl">
-                    <p className="text-xs text-white/70 mb-2 font-bold uppercase tracking-wide">Total Equipment</p>
+                    <p className="text-xs text-white/70 mb-2 font-bold uppercase tracking-wide">إجمالي المعدات</p>
                     <p className="text-4xl font-black">{EQUIPMENT_DATABASE.length}</p>
-                    <p className="text-[10px] text-white/60 mt-1">Active Tags</p>
+                    <p className="text-[10px] text-white/60 mt-1">معدة نشطة</p>
                   </div>
                   <div className="bg-white/10 backdrop-blur-xl p-5 rounded-2xl border border-white/20 shadow-xl">
-                    <p className="text-xs text-white/70 mb-2 font-bold uppercase tracking-wide">System Status</p>
+                    <p className="text-xs text-white/70 mb-2 font-bold uppercase tracking-wide">حالة النظام</p>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse shadow-lg shadow-emerald-400/50"></span>
-                      <p className="text-xl font-black text-emerald-300">ONLINE</p>
+                      <p className="text-xl font-black text-emerald-300">متصل</p>
                     </div>
-                    <p className="text-[10px] text-white/60 mt-1">Fully Synced</p>
+                    <p className="text-[10px] text-white/60 mt-1">متزامن بالكامل</p>
                   </div>
                 </div>
               </div>
@@ -321,37 +391,39 @@ export default function App() {
 
             <section className="relative">
               <div className="flex items-center justify-between mb-5 px-1">
-                <h3 className="text-sm font-black text-white uppercase tracking-[0.15em]">Recent Equipment</h3>
-                <button onClick={() => setCurrentView('search')} className="text-xs font-bold text-orange-400 bg-orange-500/10 px-4 py-2 rounded-xl uppercase tracking-wider hover:bg-orange-500/20 transition-all border border-orange-500/20">
-                  View All <i className="fas fa-arrow-right ml-2"></i>
+                <h3 className="text-lg font-black text-slate-900 uppercase tracking-wide">المعدات الحديثة</h3>
+                <button onClick={() => setCurrentView('search')} className="text-xs font-bold text-orange-600 bg-orange-50 px-5 py-2.5 rounded-xl uppercase tracking-wider hover:bg-orange-100 transition-all border-2 border-orange-200">
+                  عرض الكل <i className="fas fa-arrow-left ml-2"></i>
                 </button>
               </div>
-              <div className="grid grid-cols-1 gap-4">
+              <div className="space-y-4">
                 {EQUIPMENT_DATABASE.slice(0, 6).map(eq => (
                   <EquipmentCard key={eq.id} equipment={eq} onClick={setSelectedEquipment} />
                 ))}
-              </div>
-              <div className="absolute top-0 right-0 p-8 opacity-10 scale-150 rotate-12">
-                <i className="fas fa-clipboard-list text-8xl"></i>
               </div>
             </section>
           </div>
         );
       case 'search':
         return (
-          <div className="flex flex-col h-full overflow-hidden bg-slate-900">
-            <SearchBar onSearch={setSearchTerm} />
+          <div className="flex flex-col h-full overflow-hidden bg-gradient-to-b from-slate-50 to-white">
+            <SearchBar 
+              onSearch={setSearchTerm} 
+              filterType={filterType}
+              onFilterChange={setFilterType}
+              resultCount={filteredEquipment.length}
+            />
             <div className="flex-1 overflow-y-auto p-6">
-              <div className="flex justify-between items-center mb-6 sticky top-0 bg-slate-900 z-10 pb-4">
+              <div className="flex justify-between items-center mb-6 sticky top-0 bg-white/80 backdrop-blur-xl z-10 pb-4 rounded-2xl">
                 <div>
-                  <h2 className="text-xl font-black text-white">Equipment Registry</h2>
-                  <p className="text-sm text-slate-400 mt-1">
-                    {filteredEquipment.length} {filteredEquipment.length === 1 ? 'result' : 'results'} found
+                  <h2 className="text-2xl font-black text-slate-900">قائمة المعدات</h2>
+                  <p className="text-sm text-slate-500 mt-1 font-semibold">
+                    {filteredEquipment.length === 0 ? 'لا توجد نتائج' : 
+                     filteredEquipment.length === 1 ? 'نتيجة واحدة' : 
+                     `${filteredEquipment.length} نتيجة`}
+                    {searchTerm && ` - البحث عن: "${searchTerm}"`}
                   </p>
                 </div>
-                <button className="w-12 h-12 bg-slate-800 border border-slate-700 rounded-xl flex items-center justify-center hover:bg-slate-700 transition-all">
-                  <i className="fas fa-sliders-h text-orange-400"></i>
-                </button>
               </div>
               <div className="space-y-4">
                 {displayedEquipment.map(eq => (
@@ -365,17 +437,25 @@ export default function App() {
                     className="px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-2xl font-black text-sm shadow-2xl hover:shadow-orange-500/50 hover:scale-105 transition-all border border-orange-400"
                   >
                     <i className="fas fa-chevron-down mr-2"></i>
-                    Load More ({filteredEquipment.length - displayedEquipment.length} remaining)
+                    تحميل المزيد ({filteredEquipment.length - displayedEquipment.length} متبقية)
                   </button>
                 </div>
               )}
               {filteredEquipment.length === 0 && (
                 <div className="text-center py-32 px-12">
-                  <div className="w-24 h-24 bg-slate-800 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-slate-700">
-                    <i className="fas fa-search-minus text-5xl text-slate-600"></i>
+                  <div className="w-24 h-24 bg-orange-50 rounded-3xl flex items-center justify-center mx-auto mb-6 border-2 border-orange-200">
+                    <i className="fas fa-search-minus text-5xl text-orange-400"></i>
                   </div>
-                  <h3 className="text-lg font-black text-white mb-3">No Equipment Found</h3>
-                  <p className="text-sm text-slate-400 leading-relaxed max-w-md mx-auto">We couldn't find any equipment matching your search. Try using equipment tag numbers or system descriptions.</p>
+                  <h3 className="text-xl font-black text-slate-900 mb-3">لم يتم العثور على نتائج</h3>
+                  <p className="text-sm text-slate-500 leading-relaxed max-w-md mx-auto">
+                    لم نجد أي معدات تطابق بحثك. جرب استخدام أرقام المعدات أو الأوصاف.
+                  </p>
+                  <button 
+                    onClick={() => { setSearchTerm(''); setFilterType('الكل'); }}
+                    className="mt-6 px-6 py-3 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 transition-all"
+                  >
+                    مسح البحث
+                  </button>
                 </div>
               )}
             </div>
@@ -389,7 +469,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-7xl mx-auto bg-slate-950 overflow-hidden font-sans">
+    <div className="flex flex-col h-screen max-w-7xl mx-auto bg-white overflow-hidden font-sans">
       <Header />
       
       <main className="flex-1 overflow-y-auto relative pb-24 scroll-smooth">
@@ -403,29 +483,29 @@ export default function App() {
         />
       )}
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-2xl border-t border-slate-700 py-5 px-12 z-40 max-w-7xl mx-auto shadow-2xl">
-        <div className="flex justify-between items-center relative">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-2xl border-t-2 border-slate-200 py-4 px-6 z-40 max-w-7xl mx-auto shadow-2xl">
+        <div className="flex justify-around items-center relative">
           {[
-            { id: 'dashboard', icon: 'fa-home', label: 'Home' },
-            { id: 'search', icon: 'fa-search', label: 'Search' },
-            { id: 'ai', icon: 'fa-robot', label: 'AI Assistant' }
+            { id: 'dashboard', icon: 'fa-home', label: 'الرئيسية' },
+            { id: 'search', icon: 'fa-search', label: 'البحث' },
+            { id: 'ai', icon: 'fa-robot', label: 'مساعد AI' }
           ].map((item) => (
             <button 
               key={item.id}
               onClick={() => setCurrentView(item.id as ViewState)}
-              className={`flex flex-col items-center gap-2 transition-all duration-300 relative group ${
-                currentView === item.id ? 'text-orange-400 scale-110' : 'text-slate-500 hover:text-slate-300'
+              className={`flex flex-col items-center gap-1.5 transition-all duration-300 relative group flex-1 ${
+                currentView === item.id ? 'scale-110' : ''
               }`}
             >
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-lg ${
                 currentView === item.id 
-                  ? 'bg-gradient-to-br from-orange-500 to-orange-600 shadow-2xl shadow-orange-500/50' 
-                  : 'bg-slate-800 group-hover:bg-slate-700'
+                  ? 'bg-gradient-to-br from-orange-500 to-orange-600 shadow-orange-500/50' 
+                  : 'bg-slate-100 group-hover:bg-slate-200'
               }`}>
-                <i className={`fas ${item.icon} text-xl ${currentView === item.id ? 'text-white' : 'text-slate-400'}`}></i>
+                <i className={`fas ${item.icon} text-xl ${currentView === item.id ? 'text-white' : 'text-slate-600'}`}></i>
               </div>
-              <span className={`text-[10px] font-bold uppercase tracking-wider ${
-                currentView === item.id ? 'opacity-100 text-orange-400' : 'opacity-70 text-slate-500'
+              <span className={`text-[10px] font-bold ${
+                currentView === item.id ? 'text-orange-600' : 'text-slate-500'
               }`}>
                 {item.label}
               </span>
