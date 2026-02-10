@@ -31,4 +31,4 @@ export interface EquipmentData {
   remarks: string;
 }
 
-export type ViewState = 'dashboard' | 'search' | 'ai' | 'details';
+export type ViewState = 'dashboard' | 'search' | 'ai' | 'details' | 'modified';

@@ -245,8 +245,9 @@ const DetailView: React.FC<{ equipment: EquipmentData; onClose: () => void }> = 
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Entrez vos observations..."
-                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[120px] resize-none"
+                placeholder="اكتب ملاحظاتك هنا... يمكنك كتابة معلومات تقنية، ملاحظات الصيانة، أو أي معلومات مفيدة."
+                className="w-full p-4 bg-white border-2 border-blue-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[180px] resize-y"
+                autoFocus
               />
               <div className="flex gap-2">
                 <button 
@@ -380,6 +381,18 @@ export default function App() {
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentData | null>(null);
   const [displayLimit, setDisplayLimit] = useState(50);
   const [filterType, setFilterType] = useState('الكل');
+
+  // Get equipment with notes from localStorage
+  const getModifiedEquipment = useMemo(() => {
+    const equipmentWithNotes: EquipmentData[] = [];
+    EQUIPMENT_DATABASE.forEach(equipment => {
+      const savedNote = localStorage.getItem(`equipment-note-${equipment.id}`);
+      if (savedNote && savedNote.trim()) {
+        equipmentWithNotes.push(equipment);
+      }
+    });
+    return equipmentWithNotes;
+  }, [currentView]); // Re-calculate when view changes to refresh list
 
   const filteredEquipment = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
@@ -547,6 +560,44 @@ export default function App() {
             </div>
           </div>
         );
+      case 'modified':
+        return (
+          <div className="p-6 space-y-4 bg-slate-50 min-h-screen">
+            <div className="mb-6">
+              <h2 className="text-lg font-bold text-slate-800">المعدات المعدلة</h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {getModifiedEquipment.length === 0 
+                  ? 'لا توجد معدات معدلة' 
+                  : `${getModifiedEquipment.length} معدات تحتوي على ملاحظات`}
+              </p>
+            </div>
+            
+            {getModifiedEquipment.length > 0 ? (
+              <div className="space-y-3">
+                {getModifiedEquipment.map(eq => (
+                  <EquipmentCard key={eq.id} equipment={eq} onClick={setSelectedEquipment} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20 px-8">
+                <div className="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <i className="fas fa-sticky-note text-4xl text-slate-400"></i>
+                </div>
+                <h3 className="text-lg font-bold text-slate-800 mb-2">لا توجد معدات معدلة</h3>
+                <p className="text-sm text-slate-500 max-w-md mx-auto mb-4">
+                  لم تقم بإضافة ملاحظات لأي معدة بعد. ابدأ بالبحث عن المعدات وإضافة ملاحظاتك.
+                </p>
+                <button 
+                  onClick={() => setCurrentView('search')}
+                  className="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all inline-flex items-center gap-2"
+                >
+                  <i className="fas fa-search"></i>
+                  ابحث عن معدة
+                </button>
+              </div>
+            )}
+          </div>
+        );
       case 'ai':
         return <AIExpert />;
       default:
@@ -569,12 +620,13 @@ export default function App() {
         />
       )}
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-2 px-4 z-40 max-w-7xl mx-auto shadow-lg">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-2 px-2 z-40 max-w-7xl mx-auto shadow-lg">
         <div className="flex justify-around items-center">
           {[
             { id: 'dashboard', icon: 'fa-home', label: 'الرئيسية' },
             { id: 'search', icon: 'fa-search', label: 'البحث' },
-            { id: 'ai', icon: 'fa-robot', label: 'مساعد AI' }
+            { id: 'modified', icon: 'fa-edit', label: 'المعدلة' },
+            { id: 'ai', icon: 'fa-robot', label: 'AI' }
           ].map((item) => (
             <button 
               key={item.id}
