@@ -133,6 +133,7 @@ const EquipmentCard: React.FC<{ equipment: EquipmentData; onClick: (eq: Equipmen
 const DetailView: React.FC<{ equipment: EquipmentData; onClose: () => void }> = ({ equipment, onClose }) => {
   const [notes, setNotes] = React.useState<string>('');
   const [isEditing, setIsEditing] = React.useState(false);
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   
   React.useEffect(() => {
     const savedNotes = localStorage.getItem(`equipment-note-${equipment.id}`);
@@ -140,6 +141,18 @@ const DetailView: React.FC<{ equipment: EquipmentData; onClose: () => void }> = 
       setNotes(savedNotes);
     }
   }, [equipment.id]);
+  
+  // Focus textarea when editing mode is activated
+  React.useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        textareaRef.current?.focus();
+        // Move cursor to end of text
+        textareaRef.current?.setSelectionRange(notes.length, notes.length);
+      }, 100);
+    }
+  }, [isEditing]);
   
   const saveNotes = () => {
     localStorage.setItem(`equipment-note-${equipment.id}`, notes);
@@ -243,11 +256,11 @@ const DetailView: React.FC<{ equipment: EquipmentData; onClose: () => void }> = 
           {isEditing ? (
             <div className="space-y-2">
               <textarea
+                ref={textareaRef}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="اكتب ملاحظاتك هنا... يمكنك كتابة معلومات تقنية، ملاحظات الصيانة، أو أي معلومات مفيدة."
                 className="w-full p-4 bg-white border-2 border-blue-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[180px] resize-y"
-                autoFocus
               />
               <div className="flex gap-2">
                 <button 
